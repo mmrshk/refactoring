@@ -1,5 +1,3 @@
-require 'pry'
-
 class Validators::Account
   attr_reader :errors
 
@@ -25,12 +23,16 @@ class Validators::Account
     @errors = []
   end
 
+  def validate_input(answer, current_account)
+    answer.to_i <= current_account.cards.length && answer.to_i > 0
+  end
+
   private
 
   def initialize_account(account)
     @account = account
     @name = @account.name
-    @age = @account.age
+    @age = @account.age.to_i
     @login = @account.login
     @password = @account.password
   end
@@ -42,7 +44,6 @@ class Validators::Account
   end
 
   def validate_login
-    binding.pry
     @errors.push('Login must present') if @login.empty?
     @errors.push('Login must be longer then 4 symbols') if @login.length < 4
     @errors.push('Login must be shorter then 20 symbols') if @login.length > 20

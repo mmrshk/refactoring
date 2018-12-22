@@ -1,0 +1,42 @@
+en:
+  name_input: 'Enter your name'
+  destroy_account: 'Are you sure you want to destroy account?[y/n]'
+  age_input: 'Enter your age'
+  login_input: 'Enter your login'
+  password_input: 'Enter your password'
+  load_login: 'Enter your login'
+  load_password: 'Enter your password'
+  load_error: 'There is no account with given credentials'
+  create_the_first_account: 'There is no active accounts, do you want to be the first?[y/n]'
+  wrong_command: 'Wrong command. Try again!'
+  no_active_cards: "There is no active cards!\n"
+  card_info: "- %{number}, %{type}"
+  wrong_card_type: "Wrong card type. Try again!\n"
+  want_to_delete: 'If you want to delete:'
+  list_cards:  "- %{number}, %{type}, press %{index}"
+  exit_msg: "press `exit` to exit\n"
+  active_error_card: "There is no active cards!\n"
+  accept_delete_account: "Are you sure you want to delete %{card_number}?[y/n]"
+  choose_card_withdraw: 'Choose the card for withdrawing:'
+  withdraw_money_amount: 'Input the amount of money you want to withdraw'
+  not_enough_money: "You don't have enough money on card for such operation"
+  uncorrect_input_amout: 'You must input correct amount of $'
+  wrong_number_input: "You entered wrong number!\n"
+  no_cards_avaliable: "There is no active cards!\n"
+  hello_message: "Hello, we are RubyG bank!\n- If you want to create account - press `create`\n- If you want to load account - press `load`\n- If you want to exit - press `exit`"
+  create_card_message: "You could create one of 3 card types\n
+    - Usual card. 2% tax on card INCOME. 20$ tax on SENDING money from this card. 5% tax on WITHDRAWING money. For creation this card - press `usual`\n
+    - Capitalist card. 10$ tax on card INCOME. 10% tax on SENDING money from this card. 4$ tax on WITHDRAWING money. For creation this card - press `capitalist`\n
+    - Virtual card. 1$ tax on card INCOME. 1$ tax on SENDING money from this card. 12% tax on WITHDRAWING money. For creation this card - press `virtual`\n
+    - For exit - press `exit`"
+  main_menu_message: "Welcome, %{name}\n
+  If you want to:\n
+  - show all cards - press SC\n
+  - create card - press CC\n
+  - destroy card - press DC\n
+  - put money on card - press PM\n
+  - withdraw money on card - press WM\n
+  - send money to another card  - press SM\n
+  - destroy account - press `DA`\n
+  - exit from account - press `exit`"
+  withdraw_money_messsage: "Money %{money} withdrawed from %{current_card}$. Money left: %{balance}$. Tax: %{tax}$"
