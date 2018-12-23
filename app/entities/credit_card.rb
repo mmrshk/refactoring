@@ -1,4 +1,6 @@
 class CreditCard
+ attr_reader :balance, :number, :type
+
   CARD_TYPES = {
     usual: 'usual',
     capitalist: 'capitalist',
@@ -21,8 +23,24 @@ class CreditCard
     raise NotImplementedError
   end
 
-  def to_h
-    raise NotImplementedError
+  def withdraw_money(money_amount)
+    @balance - money_amount - withdraw_tax(money_amount)
+  end
+
+  def set_new_balance(money)
+    @balance = money
+  end
+
+  def put_money(money_amount)
+    @balance + money_amount - put_tax(money_amount)
+  end
+
+  def sender_balance(money_amount)
+    @balance - money_amount - sender_tax
+  end
+
+  def recipient_balance(money_amount)
+    @balance + money_amount - put_tax(money_amount)
   end
 
   private

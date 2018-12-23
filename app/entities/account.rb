@@ -34,8 +34,8 @@ class Account
   end
 
   def add_current_account
-    new_accounts = accounts << self
     @current_account = self
+    accounts << self
   end
 
   def destroy_account
@@ -49,11 +49,40 @@ class Account
 
   def add_new_accounts
     new_accounts = []
-    accounts.each do |ac|
-      if ac.login == @current_account.login
+    accounts.each do |account|
+      if account.login == @current_account.login
         new_accounts.push(@current_account)
       else
-        new_accounts.push(ac)
+        new_accounts.push(account)
+      end
+    end
+
+    new_accounts
+  end
+
+  def save_recepient(recipient, recipient_card)
+    new_recipient_cards = []
+
+    recipient.cards.each do |card|
+      card.balance = recipient_balance if card.number == recipient_card
+
+      new_recipient_cards.push(card)
+    end
+
+    recipient
+  end
+
+  def save_after_money_transfer_transaction(recipient_card)
+    new_accounts = []
+
+    accounts.each do |account|
+      if account.login == @current_account.login
+        new_accounts.push(@current_account)
+      elsif account.cards.map { |card| card.number }.include? recipient_card
+        recipient = save_recepient(account, recipient_card)
+        binding.pry
+        recipient.cards = new_recipient_cards
+        new_accounts.push(recipient)
       end
     end
 
@@ -76,11 +105,7 @@ class Account
     @current_account.cards.delete_at(answer.to_i - 1)
   end
 
-  def money_left(card_index, money_amount)
-    current_card = @current_account.cards[card_index.to_i - 1]
-    binding.pry
-    current_card[:balance] - money_amount - @current_account.cards.withdraw_tax('virtual', money_amount)
-
-
+  def current_card(card_index)
+    @current_account.cards[card_index.to_i - 1]
   end
 end

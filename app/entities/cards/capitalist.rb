@@ -15,14 +15,6 @@ class Capitalist < CreditCard
     super()
   end
 
-  def to_h
-    {
-      type: @type,
-      balance: @balance,
-      number: @number
-    }
-  end
-
   def withdraw_tax(amount)
     amount * TAXES[:withdraw]
   end
