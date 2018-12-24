@@ -1,8 +1,9 @@
 class Account
-  attr_reader :age, :login, :password, :name, :validator, :current_account, :cards
+  attr_reader :age, :login, :password, :name, :validator, :current_account, :cards, :storage
 
   def initialize
     @validator = Validators::Account.new
+    @storage = Storage.new
   end
 
   def create(name:, age:, login:, password:)
@@ -19,45 +20,33 @@ class Account
     @validator.puts_errors
   end
 
-  def accounts
-    return YAML.load_file(Storage::FILE_PATH) if File.exists?(Storage::FILE_PATH)
-
-    []
-  end
-
   def match?(login, password)
-    accounts.map { |a| { login: a.login, password: a.password } }.include?({ login: login, password: password })
+    @storage.load_accounts.map { |account| { login: account.login, password: account.password } }.include?(login: login, password: password)
   end
 
-  def set_current_account(login)
-    @current_account = accounts.select { |a| login == a.login }.first
+  def select_current_account(login)
+    @current_account = @storage.load_accounts.select { |account| login == account.login }.first
   end
 
   def add_current_account
     @current_account = self
-    accounts << self
+    @storage.save(@storage.load_accounts << self)
   end
 
   def destroy_account
-    new_accounts = []
-    accounts.each do |ac|
-      new_accounts.push(ac) if ac.login != @current_account.login
-    end
-
-    new_accounts
+    accounts = @storage.load_accounts
+    accounts.reject! { |account| account.login == @current_account.login }
+    save(accounts)
   end
 
-  def add_new_accounts
-    new_accounts = []
-    accounts.each do |account|
-      if account.login == @current_account.login
-        new_accounts.push(@current_account)
-      else
-        new_accounts.push(account)
-      end
+  def save_changed_accounts
+    accounts = []
+
+    @storage.load_accounts.each do |account|
+      account.login == @current_account.login ? accounts.push(@current_account) : accounts.push(account)
     end
 
-    new_accounts
+    @storage.save(accounts)
   end
 
   def save_recepient(recipient, recipient_card)
@@ -74,19 +63,17 @@ class Account
 
   def save_after_money_transfer_transaction(recipient_card)
     new_accounts = []
-
-    accounts.each do |account|
+    @storage.load_accounts.each do |account|
       if account.login == @current_account.login
         new_accounts.push(@current_account)
-      elsif account.cards.map { |card| card.number }.include? recipient_card
+      elsif account.cards.map(&:number).include? recipient_card
         recipient = save_recepient(account, recipient_card)
-        binding.pry
         recipient.cards = new_recipient_cards
         new_accounts.push(recipient)
       end
     end
 
-    new_accounts
+    @storage.save(new_accounts)
   end
 
   def valid_input?(answer)
@@ -99,10 +86,13 @@ class Account
     when CreditCard::CARD_TYPES[:capitalist] then @current_account.cards << Capitalist.new
     when CreditCard::CARD_TYPES[:virtual] then @current_account.cards << Virtual.new
     end
+
+    save_changed_accounts
   end
 
   def delete_card(answer)
     @current_account.cards.delete_at(answer.to_i - 1)
+    save_changed_accounts
   end
 
   def current_card(card_index)

@@ -1,11 +1,11 @@
 class CreditCard
- attr_reader :balance, :number, :type
-
+  attr_reader :balance, :number, :type
+  CARD_NUMBER_LENGTH = 16
   CARD_TYPES = {
     usual: 'usual',
     capitalist: 'capitalist',
     virtual: 'virtual'
-  }
+  }.freeze
 
   def initialize
     @number = generate_card_number
@@ -27,7 +27,7 @@ class CreditCard
     @balance - money_amount - withdraw_tax(money_amount)
   end
 
-  def set_new_balance(money)
+  def new_balance(money)
     @balance = money
   end
 
@@ -46,6 +46,6 @@ class CreditCard
   private
 
   def generate_card_number
-    16.times.map{ rand(10) }.join
+    Array.new(CARD_NUMBER_LENGTH) { rand(10) }.join
   end
 end

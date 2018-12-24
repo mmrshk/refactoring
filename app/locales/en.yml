@@ -12,7 +12,7 @@ en:
   card_info: "- %{number}, %{type}"
   wrong_card_type: "Wrong card type. Try again!\n"
   want_to_delete: 'If you want to delete:'
-  list_cards:  "- %{number}, %{type}, press %{index}"
+  list_cards:  "- %{card}, %{type}, press %{index}"
   exit_msg: "press `exit` to exit\n"
   accept_delete_account: "Are you sure you want to delete %{card_number}?[y/n]"
   choose_card_withdraw: 'Choose the card for withdrawing:'
@@ -22,7 +22,10 @@ en:
   uncorrect_puts_input_amount: You must input correct amount of money
   wrong_number_input: "You entered wrong number!\n"
   active_card_error : "There is no active cards!\n"
-  hello_message: "Hello, we are RubyG bank!\n- If you want to create account - press `create`\n- If you want to load account - press `load`\n- If you want to exit - press `exit`"
+  hello_message: "Hello, we are RubyG bank!\n
+  - If you want to create account - press `create`\n
+  - If you want to load account - press `load`\n
+  - If you want to exit - press `exit`"
   create_card_message: "You could create one of 3 card types\n
   - Usual card. 2% tax on card INCOME. 20$ tax on SENDING money from this card. 5% tax on WITHDRAWING money. For creation this card - press `usual`\n
   - Capitalist card. 10$ tax on card INCOME. 10% tax on SENDING money from this card. 4$ tax on WITHDRAWING money. For creation this card - press `capitalist`\n
@@ -43,7 +46,7 @@ en:
   choose_card_putting: 'Choose the card for putting:'
   puts_money_amount: Input the amount of money you want to put on your card
   high_tax_error: Your tax is higher than input amount
-  put_money_messsage: "Money %{money} was put on %{current_card}. Balance: %{balance}. Tax: %{tax}"
+  put_money_messsage: "Money %{money} was put on %{card}. Balance: %{balance}. Tax: %{tax}"
   choose_correct_card: Choose correct card
   choose_send_card: 'Choose the card for sending:'
   enter_recipient_card: 'Enter the recipient card:'

@@ -24,7 +24,7 @@ class Validators::Account
   end
 
   def validate_input(answer, current_account)
-    answer.to_i <= current_account.cards.length && answer.to_i > 0
+    answer.to_i <= current_account.cards.length && answer.to_i.positive?
   end
 
   private
@@ -38,16 +38,16 @@ class Validators::Account
   end
 
   def validate_name
-    if @name.empty? || @name[0].upcase != @name[0]
-      @errors.push('Your name must not be empty and starts with first upcase letter')
-    end
+    return unless @name.empty? || @name[0].upcase != @name[0]
+
+    @errors.push('Your name must not be empty and starts with first upcase letter')
   end
 
   def validate_login
     @errors.push('Login must present') if @login.empty?
     @errors.push('Login must be longer then 4 symbols') if @login.length < 4
     @errors.push('Login must be shorter then 20 symbols') if @login.length > 20
-    @errors.push('Such account is already exists') if @account.accounts.map(&:login).include?(@login)
+    @errors.push('Such account is already exists') if @account.storage.load_accounts.map(&:login).include?(@login)
   end
 
   def validate_password
