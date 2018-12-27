@@ -1,5 +1,5 @@
 class Console < ConsoleHelpers
-  attr_reader :login, :password, :card, :account, :renderer, :storage
+  attr_reader :login, :password, :card, :account, :renderer, :storage, :current_account
 
   def initialize
     @account = Account.new
@@ -13,11 +13,9 @@ class Console < ConsoleHelpers
     loop do
       login = ask(:load_login)
       password = ask(:load_password)
-      @account = account.select_current_account(login)
+      @account = @storage.select_current_account(login, password)
 
-      return if @account.nil?
-
-      break if @account.match?(login, password)
+      break unless @account.nil?
 
       message(:load_error)
     end
@@ -32,10 +30,65 @@ class Console < ConsoleHelpers
     @account.create_card(CreditCard::CARD_TYPES[card_type.to_sym])
   end
 
-  def list_of_cards
-    @account.cards.each_with_index { |card, i| message(:list_cards, card: card.number, type: card.type, index: i + 1) }
+  def destroy_card
+    return message(:active_card_error) if @account.cards.none?
 
-    message(:exit_msg)
+    answer = select_card_to_delete
+    return if answer.nil?
+
+    accept_delete_card(answer)
+  end
+
+  def withdraw_money
+    message(:choose_card_withdraw)
+    return message(:active_card_error) if @account.cards.none?
+
+    list_of_cards
+    handle_withdraw_money
+  end
+
+  def put_money
+    message(:choose_card_putting)
+    return message(:active_card_error) if @account.cards.none?
+
+    list_of_cards
+    handle_puts_money
+  end
+
+  def send_money
+    sender_card = choose_send_card
+    recipient_card = choose_recipient_card
+
+    return if [sender_card, recipient_card].nil?
+
+    money_transfer_transaction(sender_card, recipient_card)
+  end
+
+  def create_account
+    loop do
+      @account.create(name: ask(:name_input),
+                      age: ask(:age_input),
+                      login: ask(:login_input),
+                      password: ask(:password_input))
+      break if @account.validator.valid?
+
+      @account.errors_list
+    end
+
+    @account.add_account
+    main_menu
+  end
+
+  def destroy_account
+    message(:destroy_account)
+    @account.destroy_account if ask == CHOOSE_COMMANDS[:yes]
+  end
+
+  def create_the_first_account
+    message(:create_the_first_account)
+    return create_account if ask == CHOOSE_COMMANDS[:yes]
+
+    console
   end
 
   def show_cards
@@ -44,13 +97,19 @@ class Console < ConsoleHelpers
     @account.cards.each { |card| message(:card_info, number: card.number, type: card.type) }
   end
 
-  def destroy_card
-    return message(:active_card_error) if @account.cards.none?
+  private
 
-    answer = select_card_to_delete
-    return if answer.nil?
+  def list_of_cards
+    @account.cards.each_with_index { |card, i| message(:list_cards, card: card.number, type: card.type, index: i + 1) }
 
-    accept_delete_card(answer)
+    message(:exit_msg)
+  end
+
+  def accept_delete_card(answer)
+    message(:accept_delete_account, card_number: @account.current_card(answer).number)
+    return if ask != CHOOSE_COMMANDS[:yes]
+
+    @account.destroy_card(answer)
   end
 
   def select_card_to_delete
@@ -62,21 +121,6 @@ class Console < ConsoleHelpers
     return message(:wrong_number_input) unless @account.valid_input?(answer)
 
     answer
-  end
-
-  def accept_delete_card(answer)
-    message(:accept_delete_account, card_number: @account.current_card(answer).number)
-    return if ask != CHOOSE_COMMANDS[:yes]
-
-    @account.delete_card(answer)
-  end
-
-  def withdraw_money
-    message(:choose_card_withdraw)
-    return message(:active_card_error) if @account.cards.none?
-
-    list_of_cards
-    handle_withdraw_money
   end
 
   def handle_withdraw_money
@@ -105,14 +149,6 @@ class Console < ConsoleHelpers
     current_card.new_balance(money_left)
   end
 
-  def put_money
-    message(:choose_card_putting)
-    return if @account.cards.none?
-
-    list_of_cards
-    handle_puts_money
-  end
-
   def handle_puts_money
     answer = ask
     return if exit?(answer)
@@ -126,19 +162,11 @@ class Console < ConsoleHelpers
     money_amount = ask(:puts_money_amount).to_i
     return message(:uncorrect_puts_input_amount) unless @validator.positive?(money_amount)
 
-    return message(:high_tax_error) if current_card.put_tax(money_amount) >= money_amount
+    return message(:high_tax_error) if @validator.tax_high?(current_card, money_amount)
 
     current_card.put_money(money_amount)
+    message_put(money_amount, current_card)
     @account.save_changed_accounts
-  end
-
-  def send_money
-    sender_card = choose_send_card
-    recipient_card = choose_recipient_card
-
-    return if [sender_card, recipient_card].nil?
-
-    money_transfer_transaction(sender_card, recipient_card)
   end
 
   def choose_send_card
@@ -186,33 +214,5 @@ class Console < ConsoleHelpers
     @account.save_after_money_transfer_transaction(recipient_card)
     message_sender_card(money_amount, sender_card, recipient_balance)
     message_recepient_card(money_amount, recipient_card, sender_balance, sender_card)
-  end
-
-  def create
-    loop do
-      @account.create(name: ask(:name_input),
-                      age: ask(:age_input),
-                      login: ask(:login_input),
-                      password: ask(:password_input))
-
-      break if @account.validator.valid?
-
-      @account.errors_list
-    end
-
-    @account.add_current_account
-    main_menu
-  end
-
-  def create_the_first_account
-    message(:create_the_first_account)
-    return create if ask == CHOOSE_COMMANDS[:yes]
-
-    console
-  end
-
-  def destroy_account
-    message(:destroy_account)
-    @account.destroy_account if ask == CHOOSE_COMMANDS[:yes]
   end
 end

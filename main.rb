@@ -1,3 +1,3 @@
-require_relative 'autoload'
+require_relative 'autoload.rb'
 
 Console.new.console

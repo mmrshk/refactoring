@@ -15,6 +15,10 @@ class Storage
     []
   end
 
+  def select_current_account(login, password)
+    load_accounts.find { |account| account.login == login && account.password == password }
+  end
+
   def load_cards
     load_accounts.map(&:cards).flatten
   end

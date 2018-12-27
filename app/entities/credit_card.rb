@@ -23,8 +23,8 @@ class CreditCard
     raise NotImplementedError
   end
 
-  def withdraw_money(money_amount)
-    @balance - money_amount - withdraw_tax(money_amount)
+  def withdraw_money(money_amount)\
+    @balance = @balance - money_amount - withdraw_tax(money_amount)
   end
 
   def new_balance(money)
@@ -32,15 +32,15 @@ class CreditCard
   end
 
   def put_money(money_amount)
-    @balance + money_amount - put_tax(money_amount)
+    @balance = @balance + money_amount - put_tax(money_amount)
   end
 
   def sender_balance(money_amount)
-    @balance - money_amount - sender_tax
+    @balance = @balance - money_amount - sender_tax
   end
 
   def recipient_balance(money_amount)
-    @balance + money_amount - put_tax(money_amount)
+    @balance = @balance + money_amount - put_tax(money_amount)
   end
 
   private

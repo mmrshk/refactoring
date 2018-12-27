@@ -57,3 +57,12 @@ en:
   sender_card_money_amount_error: There is no enough money on sender card
   money_amount_on_sender_card: "Money %{money_amount}$ was put on %{card_number}. Balance: %{recipient_balance}. Tax: %{tax}$\n"
   money_amount_on_recipient_card: "Money %{money_amount}$ was put on %{recipient_card}. Balance: %{sender_balance}. Tax: %{tax}$\n"
+  empty_name_error: 'Your name must not be empty and starts with first upcase letter'
+  login_present_error: 'Login must present'
+  length_name_error: 'Login must be longer then 4 symbols'
+  short_name_error: 'Login must be shorter then 20 symbols'
+  account_exist_error: 'Such account is already exists'
+  password_present_error: 'Password must present'
+  password_longer_error: 'Password must be longer then 6 symbols'
+  password_shorter_error: 'Password must be shorter then 30 symbols'
+  age_error: 'Your Age must be greeter then 23 and lower then 90'

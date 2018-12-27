@@ -13,4 +13,8 @@ class Validators::Console
   def card_exist?(all_cards, card_number)
     all_cards.select { |card| card.number == card_number }.any?
   end
+
+  def tax_high?(current_card, money_amount)
+    current_card.put_tax(money_amount) >= money_amount
+  end
 end

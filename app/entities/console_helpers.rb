@@ -14,14 +14,14 @@ class ConsoleHelpers
     exit: 'exit'
   }.freeze
   CHOOSE_COMMANDS = {
-    yes: 'yes'
+    yes: 'y'
   }.freeze
 
   def console
     message(:hello_message)
 
     case ask
-    when CONSOLE_COMMANDS[:create] then create
+    when CONSOLE_COMMANDS[:create] then create_account
     when CONSOLE_COMMANDS[:load] then load
     else exit
     end
@@ -29,7 +29,7 @@ class ConsoleHelpers
 
   def main_menu
     loop do
-      message(:main_menu_message, name: @account.current_account.name)
+      message(:main_menu_message, name: @account.name)
       choice = ask
       if MENU_COMMANDS.value? choice
         choose_menu_command(choice)
@@ -38,17 +38,6 @@ class ConsoleHelpers
         exit
       end
     end
-  end
-
-  def choose_menu_command(command)
-    MENU_COMMANDS.each do |key, value|
-      send(key.to_s) if command == value
-    end
-  end
-
-  def destroy_account
-    @account.destroy_account
-    exit
   end
 
   def exit?(command)
@@ -62,6 +51,10 @@ class ConsoleHelpers
 
   def message(msg_name, hashee = {})
     puts I18n.t(msg_name, hashee)
+  end
+
+  def message_validate(msg_name, hashee = {})
+    I18n.t(msg_name, hashee)
   end
 
   def message_withdraw(money_amount, current_card)
@@ -94,5 +87,18 @@ class ConsoleHelpers
             recipient_card: recipient_card.number,
             sender_balance: sender_balance,
             tax: sender_card.sender_tax)
+  end
+
+  private
+
+  def choose_menu_command(command)
+    MENU_COMMANDS.each do |key, value|
+      send(key.to_s) if command == value
+    end
+  end
+
+  def destroy_account
+    @account.destroy_account
+    exit
   end
 end
