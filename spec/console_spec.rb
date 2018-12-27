@@ -237,7 +237,7 @@ RSpec.describe Console do
         after do
           File.delete(OVERRIDABLE_FILENAME) if File.exist?(OVERRIDABLE_FILENAME)
         end
-        
+
         it 'decline deleting' do
           commands = [deletable_card_number, reject_for_deleting]
           allow(current_subject).to receive_message_chain(:gets, :chomp).and_return(*commands)
@@ -304,7 +304,6 @@ RSpec.describe Console do
         expect { current_subject.main_menu }.to output(/#{ERROR_PHRASES[:wrong_command]}/).to_stdout
       end
     end
-
   end
 
   describe '#show_cards' do
@@ -526,7 +525,6 @@ RSpec.describe Console do
       expect(current_subject).to receive(:console)
       current_subject.create_the_first_account
     end
-
   end
 
   describe '#console' do
@@ -577,7 +575,9 @@ RSpec.describe Console do
 
       before do
         allow(current_subject).to receive_message_chain(:gets, :chomp).and_return(*all_inputs)
-        allow(current_subject.storage).to receive(:load_accounts) { [instance_double('Account', name: name, login: login, password: password)] }
+        allow(current_subject.storage).to receive(:load_accounts) {
+          [instance_double('Account', name: name, login: login, password: password)]
+        }
       end
 
       context 'with correct outout' do
