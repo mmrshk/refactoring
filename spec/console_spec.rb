@@ -264,6 +264,8 @@ RSpec.describe Console do
     end
 
     context 'with correct outout' do
+      let(:name) { current_subject.instance_variable_get(:@account).name }
+
       it do
         allow(current_subject).to receive(:show_cards)
         allow(current_subject).to receive(:loop).and_yield
@@ -271,7 +273,7 @@ RSpec.describe Console do
         allow(current_subject).to receive_message_chain(:gets, :chomp).and_return('SC', 'exit')
         current_subject.instance_variable_set(:@account, account_subject)
         current_subject.account.instance_variable_set(:@name, 'John')
-        expect { current_subject.main_menu }.to output(/Welcome, #{current_subject.instance_variable_get(:@account).name}/).to_stdout
+        expect { current_subject.main_menu }.to output(/Welcome, #{name}/).to_stdout
         MAIN_OPERATIONS_TEXTS.each do |text|
           allow(current_subject).to receive_message_chain(:gets, :chomp).and_return('SC', 'exit')
           expect { current_subject.send(:main_menu) }.to output(/#{text}/).to_stdout

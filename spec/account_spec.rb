@@ -21,7 +21,7 @@ RSpec.describe Account do
       length: 'Your Age must be greeter then 23 and lower then 90'
     }
   }.freeze
-  let(:current_subject) { described_class }
+  let(:current_subject) { Account.new }
 
   describe '#create_account' do
     let(:success_name_input) { 'Denis' }

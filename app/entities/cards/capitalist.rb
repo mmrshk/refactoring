@@ -2,9 +2,10 @@ class Capitalist < CreditCard
   attr_accessor :balance
 
   TAXES = {
-    withdraw: 0.04,
-    put: 10,
-    sender: 0.1
+    static_put: 1,
+    unstatic_put: 0,
+    static_sender: 0,
+    unstatic_sender: 1
   }.freeze
 
   BALANCE = 100.0
@@ -15,15 +16,15 @@ class Capitalist < CreditCard
     super()
   end
 
-  def withdraw_tax(amount)
-    amount * TAXES[:withdraw]
+  def withdraw_tax
+    96
   end
 
-  def put_tax(amount)
-    amount * TAXES[:put]
+  def put_tax
+    10
   end
 
   def sender_tax
-    TAXES[:sender]
+    90
   end
 end

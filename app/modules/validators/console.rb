@@ -16,7 +16,11 @@ module Validators
     end
 
     def tax_high?(current_card, money_amount)
-      current_card.put_tax(money_amount) >= money_amount
+      current_card.put_tax * money_amount >= money_amount
+    end
+
+    def cards_unvalid?(sender_card, recipient_card)
+      sender_card.empty? || recipient_card.empty?
     end
   end
 end

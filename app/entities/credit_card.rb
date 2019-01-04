@@ -23,8 +23,8 @@ class CreditCard
     raise NotImplementedError
   end
 
-  def withdraw_money(money_amount)\
-    @balance = @balance - money_amount - withdraw_tax(money_amount)
+  def withdraw_money(money_amount)
+    @balance = @balance - money_amount - (1 - withdraw_tax / 100) * money_amount
   end
 
   def new_balance(money)
@@ -32,11 +32,13 @@ class CreditCard
   end
 
   def put_money(money_amount)
-    @balance = @balance + money_amount - put_tax(money_amount)
+    @balance = @balance + money_amount - (put_tax * money_amount * TAXES[:static_put] + (1 - put_tax / 100) *
+               money_amount * TAXES[:unstatic_put])
   end
 
   def sender_balance(money_amount)
-    @balance = @balance - money_amount - sender_tax
+    @balance = @balance - money_amount - (sender_tax * money_amount * TAXES[:static_sender] + (1 - sender_tax / 100) *
+               money_amount * TAXES[:unstatic_sender])
   end
 
   def recipient_balance(money_amount)

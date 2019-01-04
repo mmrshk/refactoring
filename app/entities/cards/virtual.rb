@@ -2,9 +2,10 @@ class Virtual < CreditCard
   attr_accessor :balance
 
   TAXES = {
-    withdraw: 0.88,
-    put: 1,
-    sender: 1
+    static_put: 1,
+    unstatic_put: 0,
+    static_sender: 1,
+    unstatic_sender: 0
   }.freeze
 
   BALANCE = 150.0
@@ -15,15 +16,15 @@ class Virtual < CreditCard
     super()
   end
 
-  def withdraw_tax(amount)
-    amount * TAXES[:withdraw]
+  def withdraw_tax
+    12
   end
 
-  def put_tax(amount)
-    amount * TAXES[:put]
+  def put_tax
+    1
   end
 
   def sender_tax
-    TAXES[:sender]
+    1
   end
 end

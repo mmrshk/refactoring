@@ -59,7 +59,7 @@ class Console < ConsoleHelpers
     sender_card = choose_send_card
     recipient_card = choose_recipient_card
 
-    return if [sender_card, recipient_card].nil?
+    return if cards_unvalid?(sender_card, recipient_card)
 
     money_transfer_transaction(sender_card, recipient_card)
   end
