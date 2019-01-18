@@ -7,8 +7,16 @@ class CreditCard
     virtual: 'virtual'
   }.freeze
 
+  BALANCE = {
+    usual: 50.0,
+    capitalist: 100.0,
+    virtual: 150.0
+  }.freeze
+
   def initialize
     @number = generate_card_number
+    @balance = BALANCE[current_class.to_sym]
+    @type = CARD_TYPES[current_class.to_sym]
   end
 
   def withdraw_tax
@@ -49,5 +57,9 @@ class CreditCard
 
   def generate_card_number
     Array.new(CARD_NUMBER_LENGTH) { rand(10) }.join
+  end
+
+  def current_class
+    self.class.to_s.downcase
   end
 end

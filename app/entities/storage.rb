@@ -10,9 +10,8 @@ class Storage
   end
 
   def load_accounts
-    return YAML.load_file(@file_path) if File.exist?(@file_path)
-
-    []
+    return File.exist?(@file_path) ? YAML.load_file(@file_path)  : []
+    
   end
 
   def select_current_account(login, password)

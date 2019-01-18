@@ -8,14 +8,6 @@ class Capitalist < CreditCard
     unstatic_sender: 1
   }.freeze
 
-  BALANCE = 100.0
-
-  def initialize
-    @balance = BALANCE
-    @type = CARD_TYPES[:capitalist]
-    super()
-  end
-
   def withdraw_tax
     96
   end

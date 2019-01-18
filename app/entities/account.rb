@@ -31,36 +31,29 @@ class Account
   end
 
   def save_changed_accounts
-    accounts = []
-
-    @storage.load_accounts.each do |account|
-      account.login == login ? accounts.push(self) : accounts.push(account)
+    accounts = @storage.load_accounts.map do |account|
+      account.login == login ? self : account
     end
 
     @storage.save(accounts)
   end
 
   def save_recepient(recipient, recipient_card)
-    new_recipient_cards = []
-
     recipient.cards.each do |card|
       card.balance = recipient_balance if card.number == recipient_card
-
-      new_recipient_cards.push(card)
     end
 
     recipient
   end
 
   def save_after_money_transfer_transaction(recipient_card)
-    new_accounts = []
-    @storage.load_accounts.each do |account|
+    new_accounts = @storage.load_accounts.map do |account|
       if account.login == login
-        new_accounts.push(self)
-      elsif account.cards.map(&:number).include? recipient_card
+        self
+      elsif card_contains(recipient_card)
         recipient = save_recepient(account, recipient_card)
         recipient.cards = new_recipient_cards
-        new_accounts.push(recipient)
+        recipient
       end
     end
 
@@ -69,6 +62,10 @@ class Account
 
   def valid_input?(answer)
     @validator.validate_input(answer, self)
+  end
+
+  def card_contains(recipient_card)
+    account.cards.map(&:number).include? recipient_card
   end
 
   def create_card(type)

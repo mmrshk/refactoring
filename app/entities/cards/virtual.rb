@@ -8,14 +8,6 @@ class Virtual < CreditCard
     unstatic_sender: 0
   }.freeze
 
-  BALANCE = 150.0
-
-  def initialize
-    @balance = BALANCE
-    @type = CARD_TYPES[:virtual]
-    super()
-  end
-
   def withdraw_tax
     12
   end

@@ -8,14 +8,6 @@ class Usual < CreditCard
     unstatic_sender: 0
   }.freeze
 
-  BALANCE = 50.0
-
-  def initialize
-    @balance = BALANCE
-    @type = CARD_TYPES[:usual]
-    super()
-  end
-
   def withdraw_tax
     95
   end

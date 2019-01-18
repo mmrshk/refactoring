@@ -59,7 +59,7 @@ class Console < ConsoleHelpers
     sender_card = choose_send_card
     recipient_card = choose_recipient_card
 
-    return if cards_unvalid?(sender_card, recipient_card)
+    return if cards_invalid?(sender_card, recipient_card)
 
     money_transfer_transaction(sender_card, recipient_card)
   end
@@ -136,7 +136,7 @@ class Console < ConsoleHelpers
     current_card = @account.current_card(card_index)
     money_amount = ask(:withdraw_money_amount).to_i
 
-    return message(:uncorrect_input_amount) unless @validator.positive?(money_amount)
+    return message(:uncorrect_input_amount) unless money_amount.positive?
 
     set_card_balance_after_withdraw(current_card.withdraw_money(money_amount), current_card)
     @account.save_changed_accounts
@@ -144,7 +144,7 @@ class Console < ConsoleHelpers
   end
 
   def set_card_balance_after_withdraw(money_left, current_card)
-    return message(:not_enough_money) unless @validator.positive?(money_left)
+    return message(:not_enough_money) unless money_left.positive?
 
     current_card.new_balance(money_left)
   end
@@ -160,9 +160,9 @@ class Console < ConsoleHelpers
 
   def puts_money_amount(current_card)
     money_amount = ask(:puts_money_amount).to_i
-    return message(:uncorrect_puts_input_amount) unless @validator.positive?(money_amount)
+    return message(:uncorrect_puts_input_amount) unless money_amount.positive?
 
-    return message(:high_tax_error) if @validator.tax_high?(current_card, money_amount)
+    return message(:high_tax_error) if @validator.check_tax_highness(current_card, money_amount)
 
     current_card.put_money(money_amount)
     message_put(money_amount, current_card)
@@ -174,7 +174,7 @@ class Console < ConsoleHelpers
     return message(:active_card_error) if @account.cards.none?
 
     answer = handle_send_card
-    return if answer.nil?
+    return unless answer
 
     @account.current_card(answer)
   end
@@ -196,18 +196,18 @@ class Console < ConsoleHelpers
     all_cards = @storage.load_cards
     return message(:card_not_exist, number: card_number) unless @validator.card_exist?(all_cards, card_number)
 
-    all_cards.select { |card| card.number == card_number }.first
+    all_cards.detect { |card| card.number == card_number }
   end
 
   def money_transfer_transaction(sender_card, recipient_card)
     message(:money_amount_to_withdraw)
     money_amount = ask.to_i
-    return message(:wrong_number_input) unless @validator.positive?(money_amount)
+    return message(:wrong_number_input) unless money_amount.positive?
 
     sender_balance = sender_card.sender_balance(money_amount)
     recipient_balance = recipient_card.recipient_balance(money_amount)
 
-    return message(:money_amount_error) unless @validator.positive?(sender_balance)
+    return message(:money_amount_error) unless sender_balance.positive?
 
     return message(:sender_card_money_amount_error) if recipient_card.put_tax(money_amount) >= money_amount
 
